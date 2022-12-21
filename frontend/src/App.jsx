@@ -5,6 +5,7 @@ import { useState } from 'react';
 function App() {
   const [counter,setCounter] = useState(0)
   var a= 0
+  console.log(counter)
   const postTime = async()=>{
     if (a === 0) a = performance.now() / 1000; 
     await axios.post('http://localhost:3200',{time:a,count:counter})
