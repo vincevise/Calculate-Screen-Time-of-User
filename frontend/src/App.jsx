@@ -1,14 +1,17 @@
 import React, { useEffect } from 'react';
 import axios from 'axios'
+import { useState } from 'react';
 
 function App() {
+  const [counter,setCounter] = useState(0)
   var a= 0
   const postTime = async()=>{
-    await axios.post('http://localhost:3200',{time:a})
+    if (a === 0) a = performance.now() / 1000; 
+    await axios.post('http://localhost:3200',{time:a,count:counter})
   }
    
   useEffect(() => {
-    var startTime = performance.now()/1000
+    let startTime = performance.now()/1000
 
      function handleVisibilityChange () {
       if(document.visibilityState === 'visible') {
@@ -26,17 +29,29 @@ function App() {
 
     async function beforeunload(e){
       e.preventDefault();
-      await postTime()
+     
+      setCounter( counter)
+       
     }
     window.addEventListener('beforeunload', beforeunload);
     return () => {
+
       window.removeEventListener('beforeunload', beforeunload);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, []);
 
+  useEffect(()=>{
+    // postTime(counter)
+
+    return () =>{
+      postTime()
+    }
+  },[counter])
+
   return (
     <div>
+      <button onClick={()=>setCounter(counter+1)}>Counter {counter}</button>
     </div>
   );
 }
